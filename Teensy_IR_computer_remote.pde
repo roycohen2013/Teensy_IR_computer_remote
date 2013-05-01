@@ -1,0 +1,335 @@
+#include <IRremote.h>
+#include <IRremoteInt.h>
+
+#include <IRremote.h>
+
+#define CENTER 50135550
+#define UP 50190375
+#define RIGHT 50157735
+#define DOWN 50198535
+#define LEFT 50165895
+#define POWER 50153655
+#define MUTE 50137335
+#define RECALL 50149575
+#define EXIT 50141925
+#define ENTER 50194455
+#define ZERO 50135295
+#define HUNDRED 50155695
+
+const int RECV_PIN = 6;
+
+IRrecv irrecv(RECV_PIN);
+
+decode_results results;
+boolean capToggleState = true;
+
+void setup()
+{
+  Serial.begin(9600);
+  irrecv.enableIRIn(); // Start the receiver
+  irrecv.blink13(true);
+}
+
+void loop() {
+  if (irrecv.decode(&results)) {
+    if (results.decode_type == NEC) {
+      if (results.value == CENTER){
+        ctrlAltDelet();
+      }
+      if (results.value == UP){
+        ScreenUp();
+      }
+      if (results.value == RIGHT){
+        ScreenRight();
+      }
+      if (results.value == DOWN){
+        ScreenDown();
+      }
+      if (results.value == LEFT){
+        ScreenLeft();
+      }
+      if (results.value == EXIT){
+        enter();
+      }     
+      if (results.value == ENTER){
+        insert();
+      }
+      if (results.value == RECALL){
+        AltTab();
+      }
+      if (results.value == HUNDRED){
+        CtrlA();
+      }
+      if (results.value == ZERO){
+        CtrlZ();
+      }      
+
+      if (results.value == ZERO){
+        CtrlZ();
+      }  
+      if (results.value == MUTE){
+        esc();
+      }  
+      if (results.value == POWER){
+        CapsLock();
+      }  
+
+
+
+
+      Serial.print("NEC: ");
+    } 
+    else if (results.decode_type == SONY) {
+      Serial.print("SONY: ");
+    } 
+    else if (results.decode_type == RC5) {
+      Serial.print("RC5: ");
+    } 
+    else if (results.decode_type == RC6) {
+      Serial.print("RC6: ");
+    } 
+    else if (results.decode_type == UNKNOWN) {
+      Serial.print("UNKNOWN: ");
+    }
+    Serial.println(results.value, HEX);
+    Serial.println(results.value);    
+    //Serial.println(results.value);  
+    irrecv.resume(); // Receive the next value
+
+  }
+}
+
+
+
+
+
+
+
+void ctrlAltDelet(){
+  // press and hold CTRL
+  Keyboard.set_modifier(MODIFIERKEY_CTRL);
+  Keyboard.send_now();
+
+  // press ALT while still holding CTRL
+  Keyboard.set_modifier(MODIFIERKEY_CTRL | MODIFIERKEY_ALT);
+  Keyboard.send_now();
+
+  // press DELETE, while CLTR and ALT still held
+  Keyboard.set_key1(KEY_DELETE);
+  Keyboard.send_now();
+
+  // release all the keys at the same instant
+  Keyboard.set_modifier(0);
+  Keyboard.set_key1(0);
+  Keyboard.send_now(); 
+}
+
+
+void insert(){
+  Keyboard.set_key1(KEY_INSERT);
+  Keyboard.send_now();
+
+  Keyboard.set_key1(0);
+  Keyboard.send_now();
+}
+
+void esc(){
+  Keyboard.set_key1(KEY_ESC);
+  Keyboard.send_now();
+
+  Keyboard.set_key1(0);
+  Keyboard.send_now();
+}
+
+
+
+void enter(){
+  Keyboard.set_key1(KEY_ENTER);
+  Keyboard.send_now();
+
+  Keyboard.set_key1(0);
+  Keyboard.send_now();
+}
+
+
+void CapsLock(){
+
+
+
+  if(capToggleState){
+    Keyboard.set_key2(KEY_CAPS_LOCK);
+    Keyboard.send_now();
+    capToggleState = false;
+  } 
+  else {
+    Keyboard.set_key1(KEY_CAPS_LOCK);
+    Keyboard.send_now();
+    Keyboard.set_key2(0);
+    Keyboard.send_now();
+    capToggleState = true;
+  }
+}
+
+void CtrlZ(){
+  // press and hold CTRL
+  Keyboard.set_modifier(MODIFIERKEY_CTRL);
+  Keyboard.send_now();
+
+  // press DELETE, while CLTR and ALT still held
+  Keyboard.set_key1(KEY_Z);
+  Keyboard.send_now();
+
+  // release all the keys at the same instant
+  Keyboard.set_modifier(0);
+  Keyboard.set_key1(0);
+  Keyboard.send_now(); 
+}
+
+void CtrlA(){
+  // press and hold CTRL
+  Keyboard.set_modifier(MODIFIERKEY_CTRL);
+  Keyboard.send_now();
+
+  // press DELETE, while CLTR and ALT still held
+  Keyboard.set_key1(KEY_A);
+  Keyboard.send_now();
+
+  // release all the keys at the same instant
+  Keyboard.set_modifier(0);
+  Keyboard.set_key1(0);
+  Keyboard.send_now(); 
+}
+
+void AltTab(){
+  // press and hold CTRL
+  Keyboard.set_modifier(MODIFIERKEY_ALT);
+  Keyboard.send_now();
+
+  // press DELETE, while CLTR and ALT still held
+  Keyboard.set_key1(KEY_TAB);
+  Keyboard.send_now();
+
+  // release all the keys at the same instant
+  Keyboard.set_modifier(0);
+  Keyboard.set_key1(0);
+  Keyboard.send_now(); 
+}
+
+
+
+void ScreenUp(){
+  // press and hold CTRL
+  Keyboard.set_modifier(MODIFIERKEY_CTRL);
+  Keyboard.send_now();
+
+  // press ALT while still holding CTRL
+  Keyboard.set_modifier(MODIFIERKEY_CTRL | MODIFIERKEY_ALT);
+  Keyboard.send_now();
+
+  // press DELETE, while CLTR and ALT still held
+  Keyboard.set_key1(KEY_UP);
+  Keyboard.send_now();
+
+  // release all the keys at the same instant
+  Keyboard.set_modifier(0);
+  Keyboard.set_key1(0);
+  Keyboard.send_now(); 
+}
+
+void ScreenDown(){
+  // press and hold CTRL
+  Keyboard.set_modifier(MODIFIERKEY_CTRL);
+  Keyboard.send_now();
+
+  // press ALT while still holding CTRL
+  Keyboard.set_modifier(MODIFIERKEY_CTRL | MODIFIERKEY_ALT);
+  Keyboard.send_now();
+
+  // press DELETE, while CLTR and ALT still held
+  Keyboard.set_key1(KEY_DOWN);
+  Keyboard.send_now();
+
+  // release all the keys at the same instant
+  Keyboard.set_modifier(0);
+  Keyboard.set_key1(0);
+  Keyboard.send_now(); 
+}
+
+
+void ScreenRight(){
+  // press and hold CTRL
+  Keyboard.set_modifier(MODIFIERKEY_CTRL);
+  Keyboard.send_now();
+
+  // press ALT while still holding CTRL
+  Keyboard.set_modifier(MODIFIERKEY_CTRL | MODIFIERKEY_ALT);
+  Keyboard.send_now();
+
+  // press DELETE, while CLTR and ALT still held
+  Keyboard.set_key1(KEY_RIGHT);
+  Keyboard.send_now();
+
+  // release all the keys at the same instant
+  Keyboard.set_modifier(0);
+  Keyboard.set_key1(0);
+  Keyboard.send_now(); 
+}
+
+
+void ScreenLeft(){
+  // press and hold CTRL
+  Keyboard.set_modifier(MODIFIERKEY_CTRL);
+  Keyboard.send_now();
+
+  // press ALT while still holding CTRL
+  Keyboard.set_modifier(MODIFIERKEY_CTRL | MODIFIERKEY_ALT);
+  Keyboard.send_now();
+
+  // press DELETE, while CLTR and ALT still held
+  Keyboard.set_key1(KEY_LEFT);
+  Keyboard.send_now();
+
+  // release all the keys at the same instant
+  Keyboard.set_modifier(0);
+  Keyboard.set_key1(0);
+  Keyboard.send_now(); 
+}
+
+
+
+
+
+
+/*
+
+ NEC: 2FD01FE    center 50135550
+ 
+ NEC: 2FDD827    up  50190375
+ 
+ NEC: 2FD58A7    right  50157735
+ 
+ NEC: 2FDF807    down  50198535
+ 
+ NEC: 2FD7887    left  50165895
+ 
+ NEC: 2FD48B7    power  50153655
+ 
+ NEC: 2FD08F7    mute  50137335
+ 
+ NEC: 2FD38C7    recall 50149575
+ 
+ NEC: 2FD1AE5    exit  50141925
+ 
+ NEC: 2FDE817    enter  50194455
+ 
+ NEC: 2FD00FF    zero    50135295
+ 
+ NEC: 2FD50AF    hundred    50155695
+ 
+ 
+ 
+ */
+
+
+
+
